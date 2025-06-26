@@ -1,6 +1,7 @@
 /**
- * Blockchain Introduction Slide Configuration
- * Recreates the original blockchain slide template with Romanian content
+ * Basic Blockchain Introduction Slide Configuration
+ * Demonstrates adaptive sidebar system with minimal elements
+ * Testing: 2 vocabulary items + 1 concept item for adaptive height distribution
  */
 
 import type { SlideConfig } from '../../framework/types/slide.types';
@@ -9,53 +10,25 @@ export const blockchainIntroSlide: SlideConfig = {
   id: 'blockchain-intro',
   template: 'educational',
   content: {
-    title: 'Blockchain: Revoluția Digitală a Încrederii',
-    subtitle: 'Înțelegerea tehnologiei care redefinește tranzacțiile și contractele digitale',
-    bridgeText: 'Știi deja cum funcționează banca tradițională. Blockchain elimină necesitatea unui intermediar de încredere.',
-    floatingIcon: 'chain',
     vocabulary: [
       {
-        id: 'hash',
-        term: 'Hash',
-        definition: 'Fingerprint digital unic pentru fiecare bloc',
-        icon: 'hash'
+        id: 'blockchain',
+        term: 'Blockchain',
+        definition: 'Registru distribuit și criptat de tranzacții digitale',
+        icon: 'database'
       },
       {
-        id: 'node',
-        term: 'Node',
-        definition: 'Computer care menține copia blockchain-ului',
-        icon: 'server'
-      },
-      {
-        id: 'consensus',
-        term: 'Consensus',
-        definition: 'Algoritm pentru acordarea rețelei asupra stării',
-        icon: 'users'
+        id: 'block',
+        term: 'Block',
+        definition: 'Container de date cu tranzacții verificate și hash unic',
+        icon: 'box'
       }
     ],
     concepts: [
       {
-        id: 'decentralization',
-        text: 'Descentralizare completă',
-        icon: 'network',
-        emphasis: 'strong'
-      },
-      {
-        id: 'immutability',
-        text: 'Imutabilitate garantată',
-        icon: 'lock',
-        emphasis: 'strong'
-      },
-      {
-        id: 'transparency',
-        text: 'Transparență totală',
-        icon: 'eye',
-        emphasis: 'normal'
-      },
-      {
-        id: 'security',
-        text: 'Securitate criptografică',
-        icon: 'shield',
+        id: 'trust',
+        text: 'Trust distribuit',
+        icon: 'heart',
         emphasis: 'strong'
       }
     ]

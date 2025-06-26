@@ -18,7 +18,7 @@ export interface ConceptItem {
   emphasis?: 'normal' | 'strong' | 'subtle';
 }
 
-// New timing configuration types
+// Timing configuration types for carousel system
 export interface ElementTiming {
   startTime: number; // milliseconds when highlight should start
   duration: number;  // how long highlight should last
@@ -26,12 +26,6 @@ export interface ElementTiming {
 }
 
 export interface SlideTiming {
-  // Timing for main content sections
-  title?: ElementTiming;
-  subtitle?: ElementTiming;
-  bridgeText?: ElementTiming;
-  floatingIcon?: ElementTiming;
-  
   // Timing for vocabulary section and individual items
   vocabularySection?: ElementTiming;
   vocabulary?: Record<string, ElementTiming>; // keyed by item.id
@@ -42,12 +36,15 @@ export interface SlideTiming {
 }
 
 export interface SlideContent {
-  title: string;
-  subtitle?: string;
-  bridgeText?: string;
   vocabulary?: VocabularyItem[];
   concepts?: ConceptItem[];
-  floatingIcon?: string;
+}
+
+export interface SlideAudio {
+  src: string;          // "blockchain-intro.mp3" - will be loaded from /public/audio/
+  autoPlay?: boolean;   // Default: false
+  loop?: boolean;       // Default: false
+  volume?: number;      // 0.0 to 1.0, Default: 0.8
 }
 
 export interface SlideConfig {
@@ -56,7 +53,8 @@ export interface SlideConfig {
   content: SlideContent;
   theme: ThemeOrVariant;
   animations?: string;
-  timing?: SlideTiming; // New optional timing configuration
+  timing?: SlideTiming;
+  audio?: SlideAudio;
 }
 
 export interface SlideProps {

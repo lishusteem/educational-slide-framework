@@ -1,46 +1,44 @@
 /**
  * VocabularySection Component
- * Displays vocabulary items with icons, terms, and definitions
- * Supports 1-4 items with overflow handling and smooth animations
+ * Adaptive sidebar with flex-based height distribution
+ * Supports 1-5 elements with automatic height calculation
+ * Vocabulary text 10% smaller than concepts
+ * Uses flex layout for proper space distribution
  */
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import type { VocabularyItem, SlideTiming } from '../../types/slide.types';
+import type { VocabularyItem } from '../../types/slide.types';
 import { renderIcon } from '../../utils/iconRegistry';
-import { useSectionTiming, useItemTiming } from '../../utils/timingSystem';
 
 interface VocabularySectionProps {
   items: VocabularyItem[];
   maxItems?: number;
+  fontSize?: number;       // Font size in rem units
   onItemHover?: (itemId: string | null) => void;
   className?: string;
-  // New timing props
-  slideTiming?: SlideTiming;
-  isSlideActive?: boolean;
 }
 
 export const VocabularySection: React.FC<VocabularySectionProps> = ({
   items,
-  maxItems = 4,
+  maxItems = 5,
+  fontSize = 0.7,         // Default vocabulary font size
   onItemHover,
-  className = '',
-  slideTiming,
-  isSlideActive = true
+  className = ''
 }) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [isSectionHovered, setIsSectionHovered] = useState(false);
   
-  // Add timing-based highlights
-  const { isTimingHighlighted: isSectionTimingHighlighted } = useSectionTiming(
-    'vocabularySection', 
-    slideTiming, 
-    isSlideActive
-  );
+  // Limit items to maxItems (1-5 elements)
+  const displayItems = items.slice(0, Math.min(maxItems, 5));
+  const itemCount = displayItems.length;
   
-  // Limit items to maxItems
-  const displayItems = items.slice(0, maxItems);
+  // Calculate adaptive height distribution for flex items
+  const getItemFlexBasis = () => {
+    if (itemCount === 0) return '0%';
+    return `${100 / itemCount}%`;
+  };
   
   const handleItemHover = (itemId: string | null) => {
     setHoveredItem(itemId);
@@ -152,7 +150,7 @@ export const VocabularySection: React.FC<VocabularySectionProps> = ({
 
   return (
     <motion.div
-      className={`relative z-10 flex-1 ${className}`}
+      className={`relative z-10 ${className}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -160,30 +158,30 @@ export const VocabularySection: React.FC<VocabularySectionProps> = ({
       onHoverEnd={() => handleSectionHover(false)}
     >
       <motion.div 
-        className="bg-gradient-to-br from-slate-700/80 to-blue-800/70 backdrop-blur-lg rounded-xl p-4 border shadow-lg h-full flex flex-col preserve-3d relative"
+        className="bg-gradient-to-br from-slate-700/80 to-blue-800/70 backdrop-blur-lg rounded-xl p-3 border shadow-lg h-full flex flex-col preserve-3d relative"
         variants={sectionVariants}
         initial="rest"
-        animate={isSectionHovered || isSectionTimingHighlighted ? "hover" : "rest"}
+        animate={isSectionHovered ? "hover" : "rest"}
       >
         {/* Subtle animated background glow */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent rounded-xl"
           animate={{
-            opacity: isSectionHovered || isSectionTimingHighlighted ? 1 : 0,
+            opacity: isSectionHovered ? 1 : 0,
           }}
           transition={{ duration: 0.4, ease: smoothEase }}
         />
         
-        {/* Section Header */}
+        {/* Section Header - Compact */}
         <motion.h3 
-          className="flex items-center gap-2 font-bold text-xs mb-3 uppercase tracking-wider relative z-10"
+          className="flex items-center gap-2 font-bold text-xs mb-2 uppercase tracking-wider relative z-10 flex-shrink-0"
           variants={headerVariants}
           initial="rest"
-          animate={isSectionHovered || isSectionTimingHighlighted ? "hover" : "rest"}
+          animate={isSectionHovered ? "hover" : "rest"}
         >
           <motion.div
             animate={{
-              rotate: isSectionHovered || isSectionTimingHighlighted ? 360 : 0
+              rotate: isSectionHovered ? 360 : 0
             }}
             transition={{ duration: 0.6, ease: smoothEase }}
           >
@@ -192,133 +190,81 @@ export const VocabularySection: React.FC<VocabularySectionProps> = ({
               className: 'text-amber-400' 
             })}
           </motion.div>
-          Vocabular
+          VOCABULAR
         </motion.h3>
         
-        {/* Vocabulary Items */}
-        <div className="space-y-2 flex-1 relative z-10 px-1">
-          {displayItems.map((item, index) => {
-            const { isTimingHighlighted: isItemTimingHighlighted } = useItemTiming(
-              item.id,
-              'vocabulary',
-              slideTiming,
-              isSlideActive
-            );
-            
-            return (
+        {/* Vocabulary Items - Flex Distribution */}
+        <div className="flex-1 relative z-10 flex flex-col gap-1" style={{ minHeight: 0 }}>
+          {displayItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              variants={itemVariants}
+              className="cursor-pointer"
+              style={{ 
+                flexBasis: getItemFlexBasis(),
+                flexGrow: 1,
+                flexShrink: 1,
+                minHeight: '0'
+              }}
+              onHoverStart={() => handleItemHover(item.id)}
+              onHoverEnd={() => handleItemHover(null)}
+            >
               <motion.div
-                key={item.id}
-                variants={itemVariants}
-                className="cursor-pointer"
-                onHoverStart={() => handleItemHover(item.id)}
-                onHoverEnd={() => handleItemHover(null)}
-                style={{ zIndex: hoveredItem === item.id ? 20 : 10 }}
+                variants={itemHighlightVariants}
+                initial="rest"
+                animate={
+                  hoveredItem === item.id ? "hover" :
+                  isSectionHovered ? "sectionHover" : "rest"
+                }
+                className="border rounded-lg p-2 backdrop-blur-sm transition-all h-full flex items-center preserve-3d relative overflow-hidden"
               >
-                <motion.div
-                  variants={itemHighlightVariants}
-                  initial="rest"
-                  animate={
-                    hoveredItem === item.id || isItemTimingHighlighted
-                      ? 'hover' 
-                      : isSectionHovered && !hoveredItem 
-                        ? 'sectionHover' 
-                        : 'rest'
-                  }
-                  className="rounded-lg p-2.5 border relative overflow-hidden preserve-3d"
-                >
-                {/* Dynamic accent overlay */}
+                {/* Item background glow */}
                 <motion.div 
                   className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent rounded-lg"
                   animate={{
-                    opacity: hoveredItem === item.id ? 0.6 : isSectionHovered ? 0.3 : 0.2,
-                    x: hoveredItem === item.id ? 0 : isSectionHovered ? 1 : 0
+                    opacity: hoveredItem === item.id ? 1 : 0,
                   }}
                   transition={{ duration: 0.3, ease: smoothEase }}
                 />
                 
-                <div className="flex items-start gap-2 relative z-10">
-                  {/* Icon with subtle glow effect */}
+                <div className="relative z-10 flex items-center gap-2 w-full">
+                  {/* Icon Container - Compact */}
                   <motion.div 
-                    className="flex-shrink-0 w-5 h-5 bg-amber-400/20 rounded-md flex items-center justify-center mt-0.5 relative"
+                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center"
                     animate={{
-                      backgroundColor: hoveredItem === item.id 
-                        ? "rgba(245, 158, 11, 0.25)" 
-                        : "rgba(245, 158, 11, 0.2)"
+                      rotate: hoveredItem === item.id ? 360 : 0,
+                      scale: hoveredItem === item.id ? 1.1 : 1
                     }}
-                    transition={{ duration: 0.3, ease: smoothEase }}
+                    transition={{ duration: 0.4, ease: smoothEase }}
                   >
-                    <motion.div 
-                      className="text-amber-300"
-                      animate={{
-                        scale: hoveredItem === item.id ? 1.05 : 1,
-                        color: hoveredItem === item.id ? "rgb(250 204 21)" : "rgb(252 211 77)"
-                      }}
-                      transition={{ duration: 0.3, ease: smoothEase }}
-                    >
-                      {item.icon ? renderIcon(item.icon, { 
-                        size: 12, 
-                        className: 'text-current' 
-                      }) : renderIcon('book', { 
-                        size: 12, 
-                        className: 'text-current' 
-                      })}
-                    </motion.div>
-                    
-                    {/* Subtle icon glow - much more discrete */}
-                    {hoveredItem === item.id && (
-                      <motion.div
-                        className="absolute inset-0 bg-amber-400/15 rounded-md blur-sm"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    )}
+                    {renderIcon(item.icon || 'book', { 
+                      size: 12, 
+                      className: hoveredItem === item.id 
+                        ? 'text-amber-300' 
+                        : 'text-amber-400' 
+                    })}
                   </motion.div>
                   
-                  {/* Content with subtle color changes */}
-                  <div className="flex-1 min-w-0">
-                    <motion.span 
-                      className="block font-bold text-xs leading-tight"
-                      animate={{
-                        color: hoveredItem === item.id 
-                          ? "rgb(254 240 138)" 
-                          : "rgb(252 211 77)"
-                      }}
-                      transition={{ duration: 0.3, ease: smoothEase }}
-                    >
-                      {item.term}
-                    </motion.span>
-                    <motion.span 
-                      className="block text-xs leading-snug mt-1"
-                      animate={{
-                        color: hoveredItem === item.id 
-                          ? "rgb(219 234 254)" 
-                          : "rgb(191 219 254)"
-                      }}
-                      transition={{ duration: 0.3, ease: smoothEase }}
-                    >
-                      {item.definition}
-                    </motion.span>
+                  {/* Compact Text - 10% smaller than concepts */}
+                  <div 
+                    className="flex-1 leading-tight"
+                    style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      fontSize: `${fontSize}rem`,
+                      lineHeight: '1.1'
+                    }}
+                  >
+                    <span className="font-bold text-blue-100">{item.term}</span>
+                    <span className="font-normal text-blue-200"> - {item.definition}</span>
                   </div>
                 </div>
-                              </motion.div>
               </motion.div>
-            );
-          })}
+            </motion.div>
+          ))}
         </div>
-        
-        {/* Overflow indicator */}
-        {items.length > maxItems && (
-          <motion.div
-            className="mt-2 text-center relative z-10"
-            variants={itemVariants}
-          >
-            <span className="text-xs text-amber-300/60">
-              +{items.length - maxItems} more
-            </span>
-          </motion.div>
-        )}
       </motion.div>
     </motion.div>
   );
