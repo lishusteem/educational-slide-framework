@@ -27,15 +27,24 @@ import {
   Code,
   Database,
   Link,
+  Box,
   // UI icons
   ChevronLeft,
   ChevronRight,
   Play,
   Pause,
+  Square,
   Maximize,
   Minimize,
   X,
   Settings,
+  Edit3,
+  Plus,
+  RefreshCcw,
+  Type,
+  List,
+  LayoutGrid,
+  Loader2,
   // Content icons
   FileText,
   Info,
@@ -44,7 +53,8 @@ import {
   HelpCircle,
   Lightbulb,
   Target,
-  TrendingUp
+  TrendingUp,
+  Layers
 } from 'lucide-react';
 
 // Icon name mapping
@@ -62,6 +72,7 @@ export const ICON_REGISTRY = {
   'arrows-exchange': ArrowLeftRight,
   'calculator': Calculator,
   'chain': Link,
+  'box': Box,
   
   // General
   'book': Book,
@@ -79,10 +90,19 @@ export const ICON_REGISTRY = {
   'chevron-right': ChevronRight,
   'play': Play,
   'pause': Pause,
+  'square': Square,
   'maximize': Maximize,
   'minimize': Minimize,
   'close': X,
+  'x': X,
   'settings': Settings,
+  'edit-3': Edit3,
+  'plus': Plus,
+  'refresh-ccw': RefreshCcw,
+  'type': Type,
+  'list': List,
+  'layout-grid': LayoutGrid,
+  'loader-2': Loader2,
   
   // Content
   'file-text': FileText,
@@ -92,7 +112,8 @@ export const ICON_REGISTRY = {
   'help-circle': HelpCircle,
   'lightbulb': Lightbulb,
   'target': Target,
-  'trending-up': TrendingUp
+  'trending-up': TrendingUp,
+  'layers': Layers
 } as const;
 
 export type IconName = keyof typeof ICON_REGISTRY;
@@ -159,10 +180,10 @@ export function renderIcon(
  * Icon categories for easier organization
  */
 export const ICON_CATEGORIES = {
-  blockchain: ['hash', 'server', 'network', 'lock', 'shield', 'wallet', 'pickaxe', 'arrows-exchange'] as IconName[],
+  blockchain: ['hash', 'server', 'network', 'lock', 'shield', 'wallet', 'pickaxe', 'arrows-exchange', 'box', 'chain'] as IconName[],
   general: ['book', 'chart', 'globe', 'star', 'heart', 'lightning', 'diamond', 'code', 'database'] as IconName[],
-  ui: ['chevron-left', 'chevron-right', 'play', 'pause', 'maximize', 'minimize', 'close', 'settings'] as IconName[],
-  content: ['file-text', 'info', 'check-circle', 'alert-circle', 'help-circle', 'lightbulb', 'target', 'trending-up'] as IconName[]
+  ui: ['chevron-left', 'chevron-right', 'play', 'pause', 'square', 'maximize', 'minimize', 'close', 'x', 'settings', 'edit-3', 'plus', 'refresh-ccw', 'type', 'list', 'layout-grid', 'loader-2'] as IconName[],
+  content: ['file-text', 'info', 'check-circle', 'alert-circle', 'help-circle', 'lightbulb', 'target', 'trending-up', 'layers'] as IconName[]
 };
 
 /**

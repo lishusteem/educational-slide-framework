@@ -2,7 +2,7 @@
  * EducationalTemplate Component
  * Main template that recreates the blockchain slide design
  * Combines MainContent, VocabularySection, and ConceptsSection in a 4-column layout
- * Fixed layout with proper adaptive sidebar heights and editor integration
+ * Fixed layout with proper adaptive sidebar heights and permanent editor panel
  */
 
 import React, { useState } from 'react';
@@ -33,15 +33,14 @@ export const EducationalTemplate: React.FC<EducationalTemplateProps> = ({
   isSlideActive = true
 }) => {
   const [_hoveredContainer, setHoveredContainer] = useState<string | null>(null);
-  const [isEditorVisible, setIsEditorVisible] = useState(false);
   
   // Editor system integration
   const { editorState, actions, modifiedConfig } = useSidebarEditor({ 
     originalConfig: config 
   });
   
-  // Use modified config if editor is active, otherwise use original
-  const activeConfig = isEditorVisible ? modifiedConfig : config;
+  // Always use modified config since editor is permanently visible
+  const activeConfig = modifiedConfig;
   
   // Get theme classes (currently unused but available for theming)
   // const themeClasses = getThemeClasses(config.theme);
@@ -92,20 +91,6 @@ export const EducationalTemplate: React.FC<EducationalTemplateProps> = ({
 
   return (
     <div className={`slide-container ${className}`}>
-      {/* Audio Controls - Positioned at top-left, persistent */}
-      <AudioControls 
-        audioConfig={activeConfig.audio}
-        isSlideActive={isSlideActive}
-      />
-
-      {/* Sidebar Editor Panel */}
-      <SidebarEditorPanel
-        editorState={editorState}
-        actions={actions}
-        isVisible={isEditorVisible}
-        onToggleVisibility={() => setIsEditorVisible(!isEditorVisible)}
-      />
-
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div 
@@ -147,6 +132,18 @@ export const EducationalTemplate: React.FC<EducationalTemplateProps> = ({
         />
       </div>
 
+      {/* Main Layout Container */}
+      <div className="relative z-10 flex gap-2 w-full max-w-full h-full">
+        
+        {/* Canvas Area - Left Side */}
+        <div className="flex-1 flex items-center justify-center">
+          {/* Audio Controls - Positioned at top-left of canvas */}
+          <AudioControls 
+            audioConfig={activeConfig.audio}
+            isSlideActive={isSlideActive}
+            className="absolute top-6 left-6 z-20"
+          />
+
       <motion.div 
         className="w-full max-w-7xl aspect-video relative perspective-1000 preserve-3d"
         variants={containerVariants}
@@ -185,63 +182,36 @@ export const EducationalTemplate: React.FC<EducationalTemplateProps> = ({
                     {hasVocabulary && (
                       <VocabularySection 
                         items={activeConfig.content.vocabulary || []} 
-                        maxItems={isEditorVisible ? editorState.vocabulary.maxItems : maxVocabularyItems}
-                        fontSize={isEditorVisible ? editorState.vocabulary.fontSize : 0.7}
+                            maxItems={editorState.vocabulary.maxItems}
+                            fontSize={editorState.vocabulary.fontSize}
                         className="flex-1"
                       />
                     )}
                     {hasConcepts && (
                       <ConceptsSection 
                         items={activeConfig.content.concepts || []} 
-                        maxItems={isEditorVisible ? editorState.concepts.maxItems : maxConceptItems}
-                        fontSize={isEditorVisible ? editorState.concepts.fontSize : 0.75}
+                            maxItems={editorState.concepts.maxItems}
+                            fontSize={editorState.concepts.fontSize}
                         className="flex-1"
                       />
                     )}
-                    
-                    {/* Footer */}
-                    <motion.div 
-                      className="mt-4 flex-shrink-0 text-center"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 2 }}
-                    >
-                      <div className="text-xs text-slate-400 bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700/50">
-                        www.educatiecripto.ro
                       </div>
-                    </motion.div>
-                  </div>
-                </div>
-
-                {/* Discrete progress bar below sidebar */}
-                {layoutSystem.currentLayout && (
-                  <motion.div 
-                    className="px-4 pb-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5, duration: 0.8 }}
-                  >
-                    <div className="h-0.5 bg-slate-800/30 rounded-full overflow-hidden">
-                      <motion.div 
-                        className={`h-full rounded-full ${
-                          layoutSystem.currentLayout.id === 'definition' 
-                            ? 'bg-gradient-to-r from-cyan-400/40 to-blue-500/40'
-                            : layoutSystem.currentLayout.id === 'properties-grid'
-                            ? 'bg-gradient-to-r from-emerald-400/40 to-teal-500/40'
-                            : 'bg-gradient-to-r from-violet-400/40 to-purple-500/40'
-                        }`}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${layoutSystem.progress}%` }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      />
                     </div>
-                  </motion.div>
-                )}
               </motion.div>
             )}
           </div>
         </div>
       </motion.div>
+        </div>
+
+        {/* Permanent Control Panel - Right Side */}
+        <div className="flex items-center justify-center">
+          <SidebarEditorPanel
+            editorState={editorState}
+            actions={actions}
+          />
+        </div>
+      </div>
     </div>
   );
 }; 

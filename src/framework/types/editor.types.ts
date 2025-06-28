@@ -43,6 +43,4 @@ export interface SidebarEditorActions {
 export interface EditorPanelProps {
   editorState: SidebarEditorState;
   actions: SidebarEditorActions;
-  isVisible: boolean;
-  onToggleVisibility: () => void;
 } 
