@@ -3,4 +3,5 @@ export * from './template.types';
 export * from './theme.types';
 export * from './animation.types';
 export * from './presentation.types';
-export * from './layout.types'; 
+export * from './layout.types';
+export * from './layoutControl.types'; 
