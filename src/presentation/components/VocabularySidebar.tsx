@@ -253,6 +253,8 @@ export const VocabularySidebar: React.FC<VocabularySidebarProps> = ({
                     }}
                     onUpdate={(updates) => editor.updateVocabularyItem(item.id, updates)}
                     onRemove={() => editor.removeVocabularyItem(item.id)}
+                    slide={editor.slide}
+                    onSlideUpdate={onSlideUpdate}
                     onDuplicate={() => {
                       const newItem: VocabularyItem = {
                         ...item,
@@ -313,11 +315,33 @@ const VocabularyItemCard: React.FC<{
   onSelect: (selected: boolean) => void;
   onUpdate: (updates: Partial<VocabularyItem>) => void;
   onRemove: () => void;
+  slide: SlideConfig;
+  onSlideUpdate: (slide: SlideConfig) => void;
   onDuplicate: () => void;
-}> = ({ item, isSelected, onSelect, onUpdate, onRemove, onDuplicate }) => {
+}> = ({ item, isSelected, onSelect, onUpdate, onRemove, slide, onSlideUpdate, onDuplicate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTerm, setEditedTerm] = useState(item.term);
   const [editedDefinition, setEditedDefinition] = useState(item.definition);
+
+  const updateVocabularyTiming = (itemId: string, property: 'startTime' | 'duration', value: number) => {
+    const currentTiming = slide.timing?.vocabulary?.[itemId] || { startTime: 0, duration: 2000, delay: 0 };
+    
+    const updatedSlide = {
+      ...slide,
+      timing: {
+        ...slide.timing,
+        vocabulary: {
+          ...slide.timing?.vocabulary,
+          [itemId]: {
+            ...currentTiming,
+            [property]: value
+          }
+        }
+      }
+    };
+    
+    onSlideUpdate(updatedSlide);
+  };
 
   const handleSave = () => {
     onUpdate({
@@ -391,7 +415,34 @@ const VocabularyItemCard: React.FC<{
         ) : (
           <div>
             <h4 className="font-medium text-white text-sm mb-1">{item.term}</h4>
-            <p className="text-amber-200 text-xs leading-relaxed">{item.definition}</p>
+            <p className="text-amber-200 text-xs leading-relaxed mb-2">{item.definition}</p>
+            
+            {/* Timing Controls */}
+            <div className="border-t border-amber-600/30 pt-2 mt-2">
+              <div className="text-xs text-amber-300 mb-1">Highlight Timing:</div>
+              <div className="grid grid-cols-2 gap-1">
+                <div>
+                  <input
+                    type="number"
+                    value={slide.timing?.vocabulary?.[item.id]?.startTime || 0}
+                    onChange={(e) => updateVocabularyTiming(item.id, 'startTime', parseInt(e.target.value) || 0)}
+                    className="w-full bg-amber-800/30 border border-amber-600/50 rounded px-1 py-1 text-white text-xs"
+                    placeholder="Start"
+                    title="Start Time (ms)"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    value={slide.timing?.vocabulary?.[item.id]?.duration || 2000}
+                    onChange={(e) => updateVocabularyTiming(item.id, 'duration', parseInt(e.target.value) || 2000)}
+                    className="w-full bg-amber-800/30 border border-amber-600/50 rounded px-1 py-1 text-white text-xs"
+                    placeholder="Duration"
+                    title="Duration (ms)"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PresentationViewer } from './presentation/components/PresentationViewer';
 import { EnhancedPresentationViewer } from './presentation/components/EnhancedPresentationViewer';
-import { SingleSlideEditor } from './presentation/components/SingleSlideEditor';
+import { ProfessionalPresentationViewer } from './presentation/components/ProfessionalPresentationViewer';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';
 
 import { blockchainIntroSlide } from './slides/configs/blockchain-intro.config';
@@ -99,9 +99,7 @@ function App() {
       ) : viewMode === 'enhanced' ? (
         <EnhancedPresentationViewer presentation={samplePresentation} />
       ) : (
-        <SingleSlideEditor 
-          initialSlide={useTiming ? blockchainIntroWithTimingSlide : blockchainIntroSlide}
-        />
+        <ProfessionalPresentationViewer presentation={samplePresentation} />
       )}
 
       {/* Instructions for different modes */}

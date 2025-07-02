@@ -302,9 +302,11 @@ export const ConceptsSidebar: React.FC<ConceptsSidebarProps> = ({
                       }
                       setSelectedItems(newSelected);
                     }}
-                    onUpdate={(updates) => editor.updateConceptItem(item.id, updates)}
+                                        onUpdate={(updates) => editor.updateConceptItem(item.id, updates)}
                     onRemove={() => editor.removeConceptItem(item.id)}
-                                         onDuplicate={() => {
+                    slide={editor.slide}
+                    onSlideUpdate={onSlideUpdate}
+                    onDuplicate={() => {
                        const newItem: ConceptItem = {
                          ...item,
                          id: `concept-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -382,11 +384,33 @@ const ConceptItemCard: React.FC<{
   onSelect: (selected: boolean) => void;
   onUpdate: (updates: Partial<ConceptItem>) => void;
   onRemove: () => void;
+  slide: SlideConfig;
+  onSlideUpdate: (slide: SlideConfig) => void;
   onDuplicate: () => void;
-}> = ({ item, isSelected, onSelect, onUpdate, onRemove, onDuplicate }) => {
+}> = ({ item, isSelected, onSelect, onUpdate, onRemove, slide, onSlideUpdate, onDuplicate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(item.text);
   const [editedEmphasis, setEditedEmphasis] = useState(item.emphasis || 'normal');
+
+  const updateConceptTiming = (itemId: string, property: 'startTime' | 'duration', value: number) => {
+    const currentTiming = slide.timing?.concepts?.[itemId] || { startTime: 0, duration: 2000, delay: 0 };
+    
+    const updatedSlide = {
+      ...slide,
+      timing: {
+        ...slide.timing,
+        concepts: {
+          ...slide.timing?.concepts,
+          [itemId]: {
+            ...currentTiming,
+            [property]: value
+          }
+        }
+      }
+    };
+    
+    onSlideUpdate(updatedSlide);
+  };
 
   const handleSave = () => {
     onUpdate({
@@ -474,7 +498,34 @@ const ConceptItemCard: React.FC<{
           </div>
         ) : (
           <div>
-            <p className="text-white text-sm leading-relaxed">{item.text}</p>
+            <p className="text-white text-sm leading-relaxed mb-2">{item.text}</p>
+            
+            {/* Timing Controls */}
+            <div className="border-t border-green-600/30 pt-2 mt-2">
+              <div className="text-xs text-green-300 mb-1">Highlight Timing:</div>
+              <div className="grid grid-cols-2 gap-1">
+                <div>
+                  <input
+                    type="number"
+                    value={slide.timing?.concepts?.[item.id]?.startTime || 0}
+                    onChange={(e) => updateConceptTiming(item.id, 'startTime', parseInt(e.target.value) || 0)}
+                    className="w-full bg-green-800/30 border border-green-600/50 rounded px-1 py-1 text-white text-xs"
+                    placeholder="Start"
+                    title="Start Time (ms)"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    value={slide.timing?.concepts?.[item.id]?.duration || 2000}
+                    onChange={(e) => updateConceptTiming(item.id, 'duration', parseInt(e.target.value) || 2000)}
+                    className="w-full bg-green-800/30 border border-green-600/50 rounded px-1 py-1 text-white text-xs"
+                    placeholder="Duration"
+                    title="Duration (ms)"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
