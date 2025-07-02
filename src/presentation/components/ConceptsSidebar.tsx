@@ -60,8 +60,19 @@ export const ConceptsSidebar: React.FC<ConceptsSidebarProps> = ({
         id: `concept-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         text: `${item.text} (Copy)`
       };
-      editor.addConceptItem();
-      editor.updateConceptItem(newItem.id, newItem);
+      
+      const currentConcepts = editor.slide.content.concepts || [];
+      const newConcepts = [...currentConcepts, newItem];
+      
+      const updatedSlide = {
+        ...editor.slide,
+        content: {
+          ...editor.slide.content,
+          concepts: newConcepts
+        }
+      };
+      
+      onSlideUpdate(updatedSlide);
     });
     
     setSelectedItems(new Set());
@@ -253,12 +264,12 @@ export const ConceptsSidebar: React.FC<ConceptsSidebarProps> = ({
             <p className="text-green-300 text-sm">
               {searchTerm || emphasisFilter !== 'all' ? 'No matching concepts' : 'No concepts yet'}
             </p>
-            <button
-              onClick={editor.addConceptItem}
-              className="mt-3 text-green-400 hover:text-white text-sm underline transition-colors"
-            >
-              Add your first concept
-            </button>
+                         <button
+               onClick={editor.addConceptItem}
+               className="mt-3 text-green-400 hover:text-white text-sm underline transition-colors"
+             >
+               Adaugă primul concept
+             </button>
           </div>
         ) : (
           <Reorder.Group
@@ -293,15 +304,26 @@ export const ConceptsSidebar: React.FC<ConceptsSidebarProps> = ({
                     }}
                     onUpdate={(updates) => editor.updateConceptItem(item.id, updates)}
                     onRemove={() => editor.removeConceptItem(item.id)}
-                    onDuplicate={() => {
-                      const newItem: ConceptItem = {
-                        ...item,
-                        id: `concept-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                        text: `${item.text} (Copy)`
-                      };
-                      editor.addConceptItem();
-                      editor.updateConceptItem(newItem.id, newItem);
-                    }}
+                                         onDuplicate={() => {
+                       const newItem: ConceptItem = {
+                         ...item,
+                         id: `concept-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                         text: `${item.text} (Copy)`
+                       };
+                       
+                       const currentConcepts = editor.slide.content.concepts || [];
+                       const newConcepts = [...currentConcepts, newItem];
+                       
+                       const updatedSlide = {
+                         ...editor.slide,
+                         content: {
+                           ...editor.slide.content,
+                           concepts: newConcepts
+                         }
+                       };
+                       
+                       onSlideUpdate(updatedSlide);
+                     }}
                   />
                 </Reorder.Item>
               ))}

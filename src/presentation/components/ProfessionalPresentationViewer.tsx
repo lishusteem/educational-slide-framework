@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Canvas } from '../../framework/components/Canvas';
+import { EducationalTemplate } from '../../framework/components/templates/EducationalTemplate';
 import { NavigationControls } from './NavigationControls';
 import { AudioControls } from './AudioControls';
 import { LayoutManager } from './LayoutManager';
@@ -213,30 +213,24 @@ export const ProfessionalPresentationViewer: React.FC<ProfessionalPresentationVi
           {/* Canvas Area */}
           <div className="flex-1 flex flex-col min-w-0">
             
-            {/* Canvas */}
-            <div className="flex-1 p-4">
-              <div className="h-full flex items-center justify-center">
-                <div className="w-full max-w-5xl">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentSlide.id}
-                      initial={{ opacity: 0, x: 100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                      <Canvas
-                        slide={currentSlide}
-                        isPlaying={isPlaying}
-                        currentTime={currentTime}
-                        onTimeUpdate={handleTimeUpdate}
-                        showNavigation={false} // Controls are in top bar
-                        aspectRatio={workingPresentation.aspectRatio}
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
+            {/* Canvas - Full Screen ca în Single Slide */}
+            <div className="flex-1 relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide.id}
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="w-full h-full"
+                >
+                  <EducationalTemplate 
+                    config={currentSlide}
+                    isSlideActive={isPlaying}
+                    className="w-full h-full"
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
             
             {/* Quick Slide Navigation */}

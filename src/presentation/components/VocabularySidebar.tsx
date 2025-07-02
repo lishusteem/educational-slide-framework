@@ -58,8 +58,20 @@ export const VocabularySidebar: React.FC<VocabularySidebarProps> = ({
         id: `vocab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         term: `${item.term} (Copy)`
       };
-      editor.addVocabularyItem();
-      editor.updateVocabularyItem(newItem.id, newItem);
+      
+      // Adaugă direct prin setarea slide-ului
+      const currentVocabulary = editor.slide.content.vocabulary || [];
+      const newVocabulary = [...currentVocabulary, newItem];
+      
+      const updatedSlide = {
+        ...editor.slide,
+        content: {
+          ...editor.slide.content,
+          vocabulary: newVocabulary
+        }
+      };
+      
+      onSlideUpdate(updatedSlide);
     });
     
     setSelectedItems(new Set());
@@ -201,12 +213,12 @@ export const VocabularySidebar: React.FC<VocabularySidebarProps> = ({
             <p className="text-amber-300 text-sm">
               {searchTerm ? 'No matching vocabulary items' : 'No vocabulary items yet'}
             </p>
-            <button
-              onClick={editor.addVocabularyItem}
-              className="mt-3 text-amber-400 hover:text-white text-sm underline transition-colors"
-            >
-              Add your first vocabulary item
-            </button>
+                         <button
+               onClick={editor.addVocabularyItem}
+               className="mt-3 text-amber-400 hover:text-white text-sm underline transition-colors"
+             >
+               Adaugă primul termen din vocabular
+             </button>
           </div>
         ) : (
           <Reorder.Group
@@ -247,8 +259,19 @@ export const VocabularySidebar: React.FC<VocabularySidebarProps> = ({
                         id: `vocab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                         term: `${item.term} (Copy)`
                       };
-                      editor.addVocabularyItem();
-                      editor.updateVocabularyItem(newItem.id, newItem);
+                      
+                      const currentVocabulary = editor.slide.content.vocabulary || [];
+                      const newVocabulary = [...currentVocabulary, newItem];
+                      
+                      const updatedSlide = {
+                        ...editor.slide,
+                        content: {
+                          ...editor.slide.content,
+                          vocabulary: newVocabulary
+                        }
+                      };
+                      
+                      onSlideUpdate(updatedSlide);
                     }}
                   />
                 </Reorder.Item>

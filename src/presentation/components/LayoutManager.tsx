@@ -26,20 +26,66 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
 }) => {
   const [draggedSlide, setDraggedSlide] = useState<string | null>(null);
 
-  // Add new slide
-  const addNewSlide = () => {
+  // Template definitions
+  const slideTemplates = {
+    educational: {
+      title: 'Educational Template',
+      icon: 'book',
+      content: {
+        title: 'Educational Topic',
+        subtitle: 'Learning objectives and key concepts',
+        bridgeText: 'Explore the fundamental concepts...',
+        floatingIcon: 'lightbulb',
+        vocabulary: [
+          { id: 'v1', term: 'Key Term', definition: 'Definition here...', icon: 'book' }
+        ],
+        concepts: [
+          { id: 'c1', text: 'Important concept to understand', icon: 'lightbulb', emphasis: 'normal' as const }
+        ]
+      }
+    },
+    technical: {
+      title: 'Technical Template',
+      icon: 'cpu',
+      content: {
+        title: 'Technical Implementation',
+        subtitle: 'Step-by-step technical guide',
+        bridgeText: 'Understanding the technical aspects...',
+        floatingIcon: 'cpu',
+        vocabulary: [
+          { id: 'v1', term: 'API', definition: 'Application Programming Interface', icon: 'cpu' }
+        ],
+        concepts: [
+          { id: 'c1', text: 'Scalable architecture patterns', icon: 'cpu', emphasis: 'strong' as const }
+        ]
+      }
+    },
+    business: {
+      title: 'Business Template',
+      icon: 'trending-up',
+      content: {
+        title: 'Business Strategy',
+        subtitle: 'Market analysis and growth opportunities',
+        bridgeText: 'Analyzing market trends and opportunities...',
+        floatingIcon: 'trending-up',
+        vocabulary: [
+          { id: 'v1', term: 'ROI', definition: 'Return on Investment', icon: 'trending-up' }
+        ],
+        concepts: [
+          { id: 'c1', text: 'Customer-centric approach', icon: 'trending-up', emphasis: 'strong' as const }
+        ]
+      }
+    }
+  };
+
+  // Add new slide from template
+  const addSlideFromTemplate = (templateKey: keyof typeof slideTemplates) => {
+    const template = slideTemplates[templateKey];
     const newSlide: SlideConfig = {
       id: `slide-${Date.now()}`,
       template: 'educational',
       theme: 'dark-blue',
-      content: {
-        title: 'New Slide',
-        subtitle: 'Enter subtitle here...',
-        bridgeText: 'Add connecting text...',
-        floatingIcon: 'lightbulb',
-        vocabulary: [],
-        concepts: []
-      }
+      content: { ...template.content }
     };
 
     const newPresentation = {
@@ -48,7 +94,7 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
     };
 
     onPresentationUpdate(newPresentation);
-    onSlideSelect(presentation.slides.length); // Select the new slide
+    onSlideSelect(presentation.slides.length);
   };
 
   // Duplicate slide
@@ -140,15 +186,21 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
         </p>
       </div>
 
-      {/* Add New Slide Button */}
+      {/* Template Selection */}
       <div className="p-4 border-b border-slate-700/30">
-        <button
-          onClick={addNewSlide}
-          className="w-full bg-green-600/80 hover:bg-green-500 text-white py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 shadow-lg"
-        >
-          {renderIcon('plus', { size: 16 })}
-          Add New Slide
-        </button>
+        <h4 className="text-slate-300 text-sm font-medium mb-3">Adaugă Slide din Template:</h4>
+        <div className="space-y-2">
+          {Object.entries(slideTemplates).map(([key, template]) => (
+            <button
+              key={key}
+              onClick={() => addSlideFromTemplate(key as keyof typeof slideTemplates)}
+              className="w-full bg-slate-700/50 hover:bg-slate-600/60 text-white py-2 px-3 rounded-lg text-sm transition-all flex items-center gap-2 shadow-md"
+            >
+              {renderIcon(template.icon, { size: 14, className: 'text-blue-400' })}
+              {template.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Slides List */}
@@ -168,7 +220,7 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
                 onDragEnd={() => setDraggedSlide(null)}
                 className="cursor-move"
               >
-                <motion.div
+                                <motion.div
                   layout
                   className={`
                     p-3 rounded-lg border transition-all relative group
@@ -194,45 +246,17 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
                       {index + 1}
                     </div>
                     
-                    <div className="flex-1 min-w-0">
-                      <h4 className={`font-medium text-sm truncate ${
-                        currentSlideIndex === index ? 'text-white' : 'text-slate-300'
-                      }`}>
-                        {slide.content.title}
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-1 truncate">
-                        {slide.content.subtitle || 'No subtitle'}
-                      </p>
-                      
-                      {/* Slide Info */}
-                      <div className="flex items-center gap-3 mt-2 text-xs">
-                                                 <span className={`px-2 py-1 rounded text-xs ${
-                           currentSlideIndex === index 
-                             ? 'bg-blue-500/30 text-blue-200' 
-                             : 'bg-slate-700/50 text-slate-400'
-                         }`}>
-                           {typeof slide.theme === 'string' ? slide.theme : 'custom'}
-                         </span>
-                        
-                        {slide.content.vocabulary && slide.content.vocabulary.length > 0 && (
-                          <span className="text-amber-400">
-                            {renderIcon('book', { size: 10 })} {slide.content.vocabulary.length}
-                          </span>
-                        )}
-                        
-                        {slide.content.concepts && slide.content.concepts.length > 0 && (
-                          <span className="text-green-400">
-                            {renderIcon('lightbulb', { size: 10 })} {slide.content.concepts.length}
-                          </span>
-                        )}
-                        
-                        {slide.audio && (
-                          <span className="text-purple-400">
-                            {renderIcon('volume-2', { size: 10 })}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    <SlideEditableContent
+                      slide={slide}
+                      isSelected={currentSlideIndex === index}
+                      onUpdate={(updatedSlide) => {
+                        const newPresentation = {
+                          ...presentation,
+                          slides: presentation.slides.map((s, i) => i === index ? updatedSlide : s)
+                        };
+                        onPresentationUpdate(newPresentation);
+                      }}
+                    />
                   </div>
 
                   {/* Action Buttons */}
@@ -289,5 +313,162 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
         </div>
       </div>
     </motion.div>
+  );
+};
+
+// Slide Editable Content Component
+const SlideEditableContent: React.FC<{
+  slide: SlideConfig;
+  isSelected: boolean;
+  onUpdate: (slide: SlideConfig) => void;
+}> = ({ slide, isSelected, onUpdate }) => {
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isEditingSubtitle, setIsEditingSubtitle] = useState(false);
+  const [isEditingIcon, setIsEditingIcon] = useState(false);
+  const [tempTitle, setTempTitle] = useState(slide.content.title);
+  const [tempSubtitle, setTempSubtitle] = useState(slide.content.subtitle || '');
+  const [tempIcon, setTempIcon] = useState(slide.content.floatingIcon || 'lightbulb');
+
+  const iconOptions = ['lightbulb', 'book', 'cpu', 'trending-up', 'zap', 'star', 'target', 'globe', 'lock', 'shield'];
+
+  const handleSaveTitle = () => {
+    onUpdate({
+      ...slide,
+      content: { ...slide.content, title: tempTitle }
+    });
+    setIsEditingTitle(false);
+  };
+
+  const handleSaveSubtitle = () => {
+    onUpdate({
+      ...slide,
+      content: { ...slide.content, subtitle: tempSubtitle }
+    });
+    setIsEditingSubtitle(false);
+  };
+
+  const handleSaveIcon = (icon: string) => {
+    onUpdate({
+      ...slide,
+      content: { ...slide.content, floatingIcon: icon }
+    });
+    setTempIcon(icon);
+    setIsEditingIcon(false);
+  };
+
+  return (
+    <div className="flex-1 min-w-0">
+      {/* Title */}
+      {isEditingTitle ? (
+        <div className="flex gap-1">
+          <input
+            type="text"
+            value={tempTitle}
+            onChange={(e) => setTempTitle(e.target.value)}
+            className="flex-1 bg-slate-700/50 border border-slate-600 rounded px-2 py-1 text-xs text-white"
+            onBlur={handleSaveTitle}
+            onKeyPress={(e) => e.key === 'Enter' && handleSaveTitle()}
+            autoFocus
+          />
+        </div>
+      ) : (
+        <h4 
+          className={`font-medium text-sm truncate cursor-pointer hover:bg-white/5 rounded px-1 ${
+            isSelected ? 'text-white' : 'text-slate-300'
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditingTitle(true);
+          }}
+        >
+          {slide.content.title}
+        </h4>
+      )}
+
+      {/* Subtitle */}
+      {isEditingSubtitle ? (
+        <div className="flex gap-1 mt-1">
+          <input
+            type="text"
+            value={tempSubtitle}
+            onChange={(e) => setTempSubtitle(e.target.value)}
+            className="flex-1 bg-slate-700/50 border border-slate-600 rounded px-2 py-1 text-xs text-white"
+            onBlur={handleSaveSubtitle}
+            onKeyPress={(e) => e.key === 'Enter' && handleSaveSubtitle()}
+            autoFocus
+          />
+        </div>
+      ) : (
+        <p 
+          className="text-xs text-slate-400 mt-1 truncate cursor-pointer hover:bg-white/5 rounded px-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditingSubtitle(true);
+          }}
+        >
+          {slide.content.subtitle || 'Click pentru a adăuga subtitle'}
+        </p>
+      )}
+
+      {/* Icon & Stats */}
+      <div className="flex items-center gap-3 mt-2 text-xs">
+        {/* Floating Icon Selector */}
+        <div className="relative">
+          {isEditingIcon ? (
+            <div className="absolute top-0 left-0 z-50 bg-slate-800 border border-slate-600 rounded-lg p-2 grid grid-cols-5 gap-1">
+              {iconOptions.map(icon => (
+                <button
+                  key={icon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSaveIcon(icon);
+                  }}
+                  className="w-6 h-6 hover:bg-blue-600/50 rounded flex items-center justify-center"
+                >
+                  {renderIcon(icon, { size: 12, className: 'text-white' })}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditingIcon(true);
+              }}
+              className="hover:bg-white/10 rounded p-1"
+              title="Schimbă iconița"
+            >
+              {renderIcon(tempIcon, { size: 12, className: 'text-blue-400' })}
+            </button>
+          )}
+        </div>
+
+        <span className={`px-2 py-1 rounded text-xs ${
+          isSelected 
+            ? 'bg-blue-500/30 text-blue-200' 
+            : 'bg-slate-700/50 text-slate-400'
+        }`}>
+          {typeof slide.theme === 'string' ? slide.theme : 'custom'}
+        </span>
+        
+        {slide.content.vocabulary && slide.content.vocabulary.length > 0 && (
+          <span className="text-amber-400">
+            {renderIcon('book', { size: 10 })} {slide.content.vocabulary.length}
+          </span>
+        )}
+        
+        {slide.content.concepts && slide.content.concepts.length > 0 && (
+          <span className="text-green-400">
+            {renderIcon('lightbulb', { size: 10 })} {slide.content.concepts.length}
+          </span>
+        )}
+        
+        {slide.audio && (
+          <span className="text-purple-400">
+            {renderIcon('volume-2', { size: 10 })}
+          </span>
+        )}
+      </div>
+    </div>
   );
 };
