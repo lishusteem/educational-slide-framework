@@ -22,8 +22,8 @@ export const useTimingAnimation = ({
   onHighlightEnd
 }: UseTimingAnimationOptions) => {
   const [isTimingHighlighted, setIsTimingHighlighted] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const endTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+  const endTimeoutRef = useRef<number | null>(null);
 
   const startHighlight = useCallback(() => {
     setIsTimingHighlighted(true);

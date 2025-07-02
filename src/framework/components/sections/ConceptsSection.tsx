@@ -208,7 +208,7 @@ export const ConceptsSection: React.FC<ConceptsSectionProps> = ({
         
         {/* Concept Items */}
         <div className="space-y-2 flex-1 relative z-10 px-1">
-          {displayItems.map((item, index) => {
+          {displayItems.map((item, _index) => {
             const { isTimingHighlighted: isItemTimingHighlighted } = useItemTiming(
               item.id,
               'concepts',

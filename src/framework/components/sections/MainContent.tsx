@@ -44,25 +44,25 @@ export const MainContent: React.FC<MainContentProps> = ({
   });
   
   // Add timing-based highlights for each element
-  const { isTimingHighlighted: isTitleTimingHighlighted } = useTimingAnimation({
+  const { isTimingHighlighted: _isTitleTimingHighlighted } = useTimingAnimation({
     elementId: 'title',
     timing: slideTiming?.title,
     isSlideActive
   });
   
-  const { isTimingHighlighted: isSubtitleTimingHighlighted } = useTimingAnimation({
+  const { isTimingHighlighted: _isSubtitleTimingHighlighted } = useTimingAnimation({
     elementId: 'subtitle', 
     timing: slideTiming?.subtitle,
     isSlideActive
   });
   
-  const { isTimingHighlighted: isBridgeTextTimingHighlighted } = useTimingAnimation({
+  const { isTimingHighlighted: _isBridgeTextTimingHighlighted } = useTimingAnimation({
     elementId: 'bridgeText',
     timing: slideTiming?.bridgeText,
     isSlideActive
   });
   
-  const { isTimingHighlighted: isFloatingIconTimingHighlighted } = useTimingAnimation({
+  const { isTimingHighlighted: _isFloatingIconTimingHighlighted } = useTimingAnimation({
     elementId: 'floatingIcon',
     timing: slideTiming?.floatingIcon,
     isSlideActive

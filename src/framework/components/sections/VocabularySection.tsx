@@ -197,7 +197,7 @@ export const VocabularySection: React.FC<VocabularySectionProps> = ({
         
         {/* Vocabulary Items */}
         <div className="space-y-2 flex-1 relative z-10 px-1">
-          {displayItems.map((item, index) => {
+          {displayItems.map((item, _index) => {
             const { isTimingHighlighted: isItemTimingHighlighted } = useItemTiming(
               item.id,
               'vocabulary',

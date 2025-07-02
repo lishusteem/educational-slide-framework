@@ -263,7 +263,7 @@ export const createUnifiedConfig = (
   let currentTime = 4000;
   
   // Add vocabulary layouts
-  vocabularyItems.forEach((item, index) => {
+  vocabularyItems.forEach((item, _index) => {
     const timing = slideTiming?.vocabulary?.[item.id];
     const duration = timing?.duration || 3000;
     
@@ -293,7 +293,7 @@ export const createUnifiedConfig = (
   });
   
   // Add concept layouts
-  conceptItems.forEach((item, index) => {
+  conceptItems.forEach((item, _index) => {
     const timing = slideTiming?.concepts?.[item.id];
     const duration = timing?.duration || 3000;
     

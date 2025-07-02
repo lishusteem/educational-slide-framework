@@ -3,7 +3,7 @@
  * Demonstrates multi-slide presentation capability using our Educational Slide Framework
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PresentationViewer } from './components/PresentationViewer';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';

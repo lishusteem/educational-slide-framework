@@ -22,12 +22,12 @@ export const MainContent: React.FC<MainContentProps> = ({
   content,
   className = '',
   slideTiming,
-  isSlideActive = true
+  isSlideActive: _isSlideActive = true
 }) => {
   const { title, subtitle, bridgeText, floatingIcon, vocabulary, concepts } = content;
   
   // Use unified animation system
-  const { currentLayout, progress, activeHighlights } = useUnifiedAnimationContext();
+  const { currentLayout, progress } = useUnifiedAnimationContext();
   
   // Detect if we should use carousel mode (when timing exists for vocabulary/concepts)
   const shouldUseCarousel = Boolean(
@@ -37,10 +37,8 @@ export const MainContent: React.FC<MainContentProps> = ({
   );
   
   // Check for timing-based highlights using unified system
-  const isTitleTimingHighlighted = activeHighlights.has('title');
-  const isSubtitleTimingHighlighted = activeHighlights.has('subtitle');
-  const isBridgeTextTimingHighlighted = activeHighlights.has('bridgeText');
-  const isFloatingIconTimingHighlighted = activeHighlights.has('floatingIcon');
+  // Note: Highlight detection ready for implementation when needed
+  // activeHighlights.has('title'), activeHighlights.has('subtitle'), etc.
 
   const floatingAnimation = {
     y: [0, -8, 0],
