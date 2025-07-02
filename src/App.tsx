@@ -5,11 +5,12 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { PresentationViewer } from './components/PresentationViewer';
+import { PresentationViewer } from './presentation/components/PresentationViewer';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';
+
 import { blockchainIntroSlide } from './slides/configs/blockchain-intro.config';
 import { blockchainIntroWithTimingSlide } from './slides/configs/blockchain-intro-with-timing.config';
-import { blockchainPresentationConfig } from './slides/configs/presentation.config';
+import { samplePresentation } from './slides/configs/sample-presentation.config';
 import { renderIcon } from './framework/utils/iconRegistry';
 
 type ViewMode = 'single' | 'presentation';
@@ -82,7 +83,7 @@ function App() {
           isSlideActive={true}
         />
       ) : (
-        <PresentationViewer presentation={blockchainPresentationConfig} />
+        <PresentationViewer presentation={samplePresentation} />
       )}
 
       {/* Instructions for presentation mode */}
