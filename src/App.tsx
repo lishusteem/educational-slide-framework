@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PresentationViewer } from './presentation/components/PresentationViewer';
 import { EnhancedPresentationViewer } from './presentation/components/EnhancedPresentationViewer';
-import { ProfessionalPresentationViewer } from './presentation/components/ProfessionalPresentationViewer';
+import { SingleSlideEditor } from './presentation/components/SingleSlideEditor';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';
 
 import { blockchainIntroSlide } from './slides/configs/blockchain-intro.config';
@@ -58,7 +58,7 @@ function App() {
           <span className="text-sm font-medium">
             {viewMode === 'single' ? 'Prezentare Completă' : 
              viewMode === 'presentation' ? 'Editor Avanzat' : 
-             viewMode === 'enhanced' ? 'Editor Profesional' : 'Slide Singular'}
+             viewMode === 'enhanced' ? 'Editor Profesional' : 'Single Slide Editor'}
           </span>
         </motion.button>
 
@@ -99,7 +99,9 @@ function App() {
       ) : viewMode === 'enhanced' ? (
         <EnhancedPresentationViewer presentation={samplePresentation} />
       ) : (
-        <ProfessionalPresentationViewer presentation={samplePresentation} />
+        <SingleSlideEditor 
+          initialSlide={useTiming ? blockchainIntroWithTimingSlide : blockchainIntroSlide}
+        />
       )}
 
       {/* Instructions for different modes */}
@@ -148,14 +150,14 @@ function App() {
         >
           <div className="text-xs text-purple-100">
             <div className="font-medium text-purple-300 mb-1 flex items-center gap-2">
-              {renderIcon('layers', { size: 12 })}
-              Editor Profesional Multi-Panel:
+              {renderIcon('edit-3', { size: 12 })}
+              Single Slide Editor:
             </div>
-            <div>• Manager layout: Adaugă, șterge, reordonează slide-uri</div>
-            <div>• Sidebar vocabular: Gestionează termeni dedicat</div>
-            <div>• Sidebar concepte: Gestionează idei cu emphasis</div>
-            <div>• Panouri colapsabile pentru spațiu optim</div>
-            <div>• Export ready pentru prezentări standalone</div>
+            <div>• Layout cycling: ON/OFF pentru carouselul educat</div>
+            <div>• Audio local: Upload și control audio files</div>
+            <div>• Editor complet: Toate elementele editabile</div>
+            <div>• Dropdown sections: Conținut, audio, vocabular, concepte</div>
+            <div>• Real-time editing: Modificări live în slide</div>
           </div>
         </motion.div>
       )}
