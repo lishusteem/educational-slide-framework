@@ -50,13 +50,21 @@ export interface SlideContent {
   floatingIcon?: string;
 }
 
+export interface SlideAudio {
+  src: string;
+  volume?: number;
+  loop?: boolean;
+  autoPlay?: boolean;
+}
+
 export interface SlideConfig {
   id: string;
   template: string;
   content: SlideContent;
   theme: ThemeOrVariant;
   animations?: string;
-  timing?: SlideTiming; // New optional timing configuration
+  timing?: SlideTiming; // Optional timing configuration
+  audio?: SlideAudio; // Optional audio configuration
 }
 
 export interface SlideProps {

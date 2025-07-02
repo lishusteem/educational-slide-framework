@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PresentationViewer } from './presentation/components/PresentationViewer';
+import { EnhancedPresentationViewer } from './presentation/components/EnhancedPresentationViewer';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';
 
 import { blockchainIntroSlide } from './slides/configs/blockchain-intro.config';
@@ -13,14 +14,18 @@ import { blockchainIntroWithTimingSlide } from './slides/configs/blockchain-intr
 import { samplePresentation } from './slides/configs/sample-presentation.config';
 import { renderIcon } from './framework/utils/iconRegistry';
 
-type ViewMode = 'single' | 'presentation';
+type ViewMode = 'single' | 'presentation' | 'enhanced';
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('single');
   const [useTiming, setUseTiming] = useState(true); // Default to carousel mode
 
   const toggleMode = () => {
-    setViewMode(prev => prev === 'single' ? 'presentation' : 'single');
+    setViewMode(prev => {
+      if (prev === 'single') return 'presentation';
+      if (prev === 'presentation') return 'enhanced';
+      return 'single';
+    });
   };
 
   const toggleTiming = () => {
@@ -41,12 +46,15 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          {renderIcon(viewMode === 'single' ? 'maximize' : 'minimize', { 
+          {renderIcon(
+            viewMode === 'single' ? 'maximize' : 
+            viewMode === 'presentation' ? 'edit-3' : 'minimize', { 
             size: 16, 
             className: 'text-blue-400' 
           })}
           <span className="text-sm font-medium">
-            {viewMode === 'single' ? 'Prezentare Completă' : 'Slide Singular'}
+            {viewMode === 'single' ? 'Prezentare Completă' : 
+             viewMode === 'presentation' ? 'Editor Avanzat' : 'Slide Singular'}
           </span>
         </motion.button>
 
@@ -82,11 +90,13 @@ function App() {
           config={useTiming ? blockchainIntroWithTimingSlide : blockchainIntroSlide} 
           isSlideActive={true}
         />
-      ) : (
+      ) : viewMode === 'presentation' ? (
         <PresentationViewer presentation={samplePresentation} />
+      ) : (
+        <EnhancedPresentationViewer presentation={samplePresentation} />
       )}
 
-      {/* Instructions for presentation mode */}
+      {/* Instructions for different modes */}
       {viewMode === 'presentation' && (
         <motion.div
           className="fixed bottom-20 left-6 bg-slate-800/90 backdrop-blur-lg rounded-lg px-4 py-3 text-white border border-slate-700/50 shadow-lg max-w-xs"
@@ -95,10 +105,30 @@ function App() {
           transition={{ delay: 1.5 }}
         >
           <div className="text-xs text-slate-300">
-            <div className="font-medium text-blue-400 mb-1">Navigare:</div>
+            <div className="font-medium text-blue-400 mb-1">Navigare Prezentare:</div>
             <div>• Săgeți: ← →</div>
             <div>• Spațiu: Următorul slide</div>
             <div>• Click pe puncte pentru slide direct</div>
+          </div>
+        </motion.div>
+      )}
+
+      {viewMode === 'enhanced' && (
+        <motion.div
+          className="fixed bottom-20 left-6 bg-green-800/90 backdrop-blur-lg rounded-lg px-4 py-3 text-white border border-green-600/50 shadow-lg max-w-sm"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.5 }}
+        >
+          <div className="text-xs text-green-100">
+            <div className="font-medium text-green-300 mb-1 flex items-center gap-2">
+              {renderIcon('edit-3', { size: 12 })}
+              Editor Avanzat Activat:
+            </div>
+            <div>• Editor în timp real pentru conținut</div>
+            <div>• Controluri audio integrate</div>
+            <div>• Buton Editor pentru a ascunde/afișa</div>
+            <div>• Toate modificările sunt live</div>
           </div>
         </motion.div>
       )}
