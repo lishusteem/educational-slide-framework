@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PresentationViewer } from './presentation/components/PresentationViewer';
 import { EnhancedPresentationViewer } from './presentation/components/EnhancedPresentationViewer';
+import { ProfessionalPresentationViewer } from './presentation/components/ProfessionalPresentationViewer';
 import { EducationalTemplate } from './framework/components/templates/EducationalTemplate';
 
 import { blockchainIntroSlide } from './slides/configs/blockchain-intro.config';
@@ -14,7 +15,7 @@ import { blockchainIntroWithTimingSlide } from './slides/configs/blockchain-intr
 import { samplePresentation } from './slides/configs/sample-presentation.config';
 import { renderIcon } from './framework/utils/iconRegistry';
 
-type ViewMode = 'single' | 'presentation' | 'enhanced';
+type ViewMode = 'single' | 'presentation' | 'enhanced' | 'professional';
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('single');
@@ -24,6 +25,7 @@ function App() {
     setViewMode(prev => {
       if (prev === 'single') return 'presentation';
       if (prev === 'presentation') return 'enhanced';
+      if (prev === 'enhanced') return 'professional';
       return 'single';
     });
   };
@@ -48,13 +50,15 @@ function App() {
         >
           {renderIcon(
             viewMode === 'single' ? 'maximize' : 
-            viewMode === 'presentation' ? 'edit-3' : 'minimize', { 
+            viewMode === 'presentation' ? 'edit-3' : 
+            viewMode === 'enhanced' ? 'layers' : 'minimize', { 
             size: 16, 
             className: 'text-blue-400' 
           })}
           <span className="text-sm font-medium">
             {viewMode === 'single' ? 'Prezentare Completă' : 
-             viewMode === 'presentation' ? 'Editor Avanzat' : 'Slide Singular'}
+             viewMode === 'presentation' ? 'Editor Avanzat' : 
+             viewMode === 'enhanced' ? 'Editor Profesional' : 'Slide Singular'}
           </span>
         </motion.button>
 
@@ -92,8 +96,10 @@ function App() {
         />
       ) : viewMode === 'presentation' ? (
         <PresentationViewer presentation={samplePresentation} />
-      ) : (
+      ) : viewMode === 'enhanced' ? (
         <EnhancedPresentationViewer presentation={samplePresentation} />
+      ) : (
+        <ProfessionalPresentationViewer presentation={samplePresentation} />
       )}
 
       {/* Instructions for different modes */}
@@ -129,6 +135,27 @@ function App() {
             <div>• Controluri audio integrate</div>
             <div>• Buton Editor pentru a ascunde/afișa</div>
             <div>• Toate modificările sunt live</div>
+          </div>
+        </motion.div>
+      )}
+
+      {viewMode === 'professional' && (
+        <motion.div
+          className="fixed bottom-20 left-6 bg-purple-800/90 backdrop-blur-lg rounded-lg px-4 py-3 text-white border border-purple-600/50 shadow-lg max-w-sm"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.5 }}
+        >
+          <div className="text-xs text-purple-100">
+            <div className="font-medium text-purple-300 mb-1 flex items-center gap-2">
+              {renderIcon('layers', { size: 12 })}
+              Editor Profesional Multi-Panel:
+            </div>
+            <div>• Manager layout: Adaugă, șterge, reordonează slide-uri</div>
+            <div>• Sidebar vocabular: Gestionează termeni dedicat</div>
+            <div>• Sidebar concepte: Gestionează idei cu emphasis</div>
+            <div>• Panouri colapsabile pentru spațiu optim</div>
+            <div>• Export ready pentru prezentări standalone</div>
           </div>
         </motion.div>
       )}
