@@ -65,6 +65,7 @@ export interface SlideConfig {
   animations?: string;
   timing?: SlideTiming; // Optional timing configuration
   audio?: SlideAudio; // Optional audio configuration
+  order?: number;
 }
 
 export interface SlideProps {
